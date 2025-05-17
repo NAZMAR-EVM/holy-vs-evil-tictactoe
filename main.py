@@ -4,9 +4,8 @@ import random
 import os
 import time
 
-# ==== ПАРАМЕТРЫ ====
-FIELD_SIZE = 5  # поле 5x5
-WIN_LEN = 4     # победа по 4 в ряд
+FIELD_SIZE = 5  
+WIN_LEN = 4     
 WIDTH, HEIGHT = 800, 850
 CELL_SIZE = WIDTH // FIELD_SIZE
 BG_COLOR = (30, 0, 0)
@@ -107,17 +106,14 @@ def check_win(board, win_len=WIN_LEN):
         for j in range(FIELD_SIZE):
             if board[i][j] == '':
                 continue
-            # Горизонталь
+            
             if j + win_len <= FIELD_SIZE and all(board[i][j + k] == board[i][j] for k in range(win_len)):
                 return board[i][j]
-            # Вертикаль
             if i + win_len <= FIELD_SIZE and all(board[i + k][j] == board[i][j] for k in range(win_len)):
                 return board[i][j]
-            # Диагональ вниз-вправо
             if i + win_len <= FIELD_SIZE and j + win_len <= FIELD_SIZE and \
                     all(board[i + k][j + k] == board[i][j] for k in range(win_len)):
                 return board[i][j]
-            # Диагональ вверх-вправо
             if i - win_len + 1 >= 0 and j + win_len <= FIELD_SIZE and \
                     all(board[i - k][j + k] == board[i][j] for k in range(win_len)):
                 return board[i][j]
@@ -133,7 +129,6 @@ def ai_move(board, ai, level):
         i, j = random.choice(empty)
         board[i][j] = ai
     elif level == "Средне":
-        # Атака/блокировка
         human = 'O' if ai == 'X' else 'X'
         for i, j in empty:
             board[i][j] = ai
@@ -159,7 +154,6 @@ def ai_move(board, ai, level):
     else:  
         i, j = random.choice(empty)
         board[i][j] = ai
-#жоске алгоритм
 MAX_DEPTH = 3
 
 def evaluate_board(board, ai, opponent):
@@ -169,12 +163,10 @@ def evaluate_board(board, ai, opponent):
         for j in range(FIELD_SIZE):
             for di, dj in [(1,0), (0,1), (1,1), (1,-1)]:
                 try:
-                    # 4 в ряд
                     if all(0 <= i+di*k < FIELD_SIZE and 0 <= j+dj*k < FIELD_SIZE and board[i+di*k][j+dj*k] == ai for k in range(4)):
                         ai_score += 1000
                     if all(0 <= i+di*k < FIELD_SIZE and 0 <= j+dj*k < FIELD_SIZE and board[i+di*k][j+dj*k] == opponent for k in range(4)):
                         opp_score += 1000
-                    # 3 в ряд
                     if all(0 <= i+di*k < FIELD_SIZE and 0 <= j+dj*k < FIELD_SIZE and board[i+di*k][j+dj*k] == ai for k in range(3)):
                         ai_score += 10
                     if all(0 <= i+di*k < FIELD_SIZE and 0 <= j+dj*k < FIELD_SIZE and board[i+di*k][j+dj*k] == opponent for k in range(3)):
